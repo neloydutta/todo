@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
         res.cookie('token', req.session.token);
         res.sendFile(__dirname + '/public/index1.html');
     } else {
-        res.cookie('token', '');
+        res.cookie('token', null);
         //res.redirect('/auth/google');
         res.sendFile(__dirname + '/public/login.html');
     }
@@ -59,10 +59,10 @@ app.get('/auth/google/callback',
 );
 
 app.get('/gettodo', (req, res) => {
-    if(req.session.token){
+    if(req.session.token != ''){
         db.todomodel.findOne({'_id': req.session.passport.user.profile.id}, 
         function(err, result){
-            //console.log(result);
+            console.log(result);
             if (err) {res.send(500, {"message":"failure"});}
             else res.json(result.todos);
         });
