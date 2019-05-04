@@ -64,7 +64,8 @@ app.get('/gettodo', (req, res) => {
         function(err, result){
             console.log(result);
             if (err) {res.send(500, {"message":"failure"});}
-            else res.json(result.todos);
+            else if(result) res.json(result.todos);
+            else res.json([]);
         });
     }
     else
