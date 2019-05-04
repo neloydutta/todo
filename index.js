@@ -59,21 +59,29 @@ app.get('/auth/google/callback',
 );
 
 app.get('/gettodo', (req, res) => {
-    db.todomodel.findOne({'_id': req.session.passport.user.profile.id}, 
-    function(err, result){
-        //console.log(result);
-        if (err) {res.send(500, {"message":"failure"});}
-        else res.json(result.todos);
-   });
+    if(req.session.token){
+        db.todomodel.findOne({'_id': req.session.passport.user.profile.id}, 
+        function(err, result){
+            //console.log(result);
+            if (err) {res.send(500, {"message":"failure"});}
+            else res.json(result.todos);
+        });
+    }
+    else
+        res.json([]);
 });
 
 app.post('/settodo', (req, res) => {
-    db.todomodel.findOneAndUpdate({'_id': req.session.passport.user.profile.id}, {'todos': req.body.body}, {upsert:true}, 
-    function(err, result){
-        if (err) return res.send(500, {"message":"failure"});
-        res.send(200, {"message":"success"});
-    });
-
+    if(req.session.token){
+        db.todomodel.findOneAndUpdate({'_id': req.session.passport.user.profile.id}, {'todos': req.body.body}, {upsert:true}, 
+        function(err, result){
+            if (err) res.send(500, {"message":"failure"});
+            else res.send(200, {"message":"success"});
+        });
+    }
+    else{
+        res.send(500, {"message":"failure"});
+    }
 
 });
 
