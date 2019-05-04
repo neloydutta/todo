@@ -62,8 +62,8 @@ app.get('/gettodo', (req, res) => {
     db.todomodel.findOne({'_id': req.session.passport.user.profile.id}, 
     function(err, result){
         //console.log(result);
-        if (err) return res.send(500, {"message":"failure"});
-        res.json(result.todos);
+        if (err) {res.send(500, {"message":"failure"});}
+        else res.json(result.todos);
    });
 });
 
