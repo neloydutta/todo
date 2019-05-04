@@ -3,16 +3,24 @@ const express = require('express'),
     passport = require('passport'),
     auth = require('./auth'),
     cookieParser = require('cookie-parser'),
-    cookieSession = require('cookie-session');
-
+    cookieSession = require('cookie-session'),
+    bodyparser = require('body-parser'),
+    mongoose = require('mongoose'),
+    secret = require('./secret'),
+    db = require('./db'),
+    port = process.env.PORT || 8080;
+const conn_str = `mongodb://${secret.dbuser}:${secret.dbpassword}@ds149706.mlab.com:49706/todo-db`;
+mongoose.connect(conn_str, { useNewUrlParser: true });
 auth(passport);
 app.use(passport.initialize());
-
+app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.json());
 app.use(cookieSession({
     name: 'session',
     keys: ['andthetruthisiamironman'],
     maxAge: 24 * 60 * 60 * 1000
 }));
+
 app.use(cookieParser());
 app.use(express.static('public'));
 
@@ -50,6 +58,25 @@ app.get('/auth/google/callback',
     }
 );
 
-app.listen(8080, () => {
-    console.log('Server is running on port 8080');
+app.get('/gettodo', (req, res) => {
+    db.todomodel.findOne({'_id': req.session.passport.user.profile.id}, 
+    function(err, result){
+        console.log(result);
+        if (err) return res.send(500, {"message":"failure"});
+        res.json(result.todos);
+   });
+});
+
+app.post('/settodo', (req, res) => {
+    db.todomodel.findOneAndUpdate({'_id': req.session.passport.user.profile.id}, {'todos': req.body.body}, {upsert:true}, 
+    function(err, result){
+        if (err) return res.send(500, {"message":"failure"});
+        res.send(200, {"message":"success"});
+    });
+
+
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 });

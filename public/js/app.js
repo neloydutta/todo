@@ -19,7 +19,6 @@
 			});
 		}
 	};
-
 	exports.app = new Vue({
 
 		// the root element that will be compiled
@@ -39,6 +38,19 @@
 				deep: true,
 				handler: todoStorage.save
 			}
+		},
+
+		mounted() {
+			axios.get('/gettodo')
+			.then(response => {
+				this.info = response.data;
+				console.log(this.info);
+				this.todos = this.info
+			})
+			.catch(e => {
+					console.log(e);
+					this.errors.push(e);
+			});
 		},
 
 		// computed properties
@@ -84,7 +96,8 @@
 				this.todos.splice(index, 1);
 			},
 
-			editTodo: function (todo) {
+			editTodo: 
+			function (todo) {
 				this.beforeEditCache = todo.title;
 				this.editedTodo = todo;
 			},

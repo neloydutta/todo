@@ -318,6 +318,32 @@ body {
 	border-color: rgba(175, 47, 47, 0.2);
 }
 
+.login-with-google,
+html .login-with-google:active {
+	position: relative;
+	line-height: 20px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.login-with-google:hover {
+	text-decoration: underline;
+}
+
+.logout-with-google,
+html .logout-with-google:active {
+	float: right;
+	text-align: right;
+	position: relative;
+	line-height: 20px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.logout-with-google:hover {
+	text-decoration: underline;
+}
+
 .clear-completed,
 html .clear-completed:active {
 	float: right;
